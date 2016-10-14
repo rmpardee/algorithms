@@ -26,7 +26,7 @@ function percentOverlap(rect1, rect2) {
   const xOverlap = Math.abs(rightEdge1 - rectangle2.bottomLeft[0]);
 
   const topEdge1 = rectangle1.bottomLeft[1] + rectangle1.height;
-  const yOverlap = 
+  const yOverlap = Math.abs()
 };
 
 console.log("percentOverlap(rectangle1, rectangle2): ", percentOverlap(rectangle1, rectangle2));
