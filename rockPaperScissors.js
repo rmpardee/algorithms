@@ -41,7 +41,7 @@ b. if you DO pass in the throws array as a parameter:
 4) There is no need to pass in the turn count, it's irrelevant
 a. if you DO pass in the turn count:
 - you can count up or down, doesn't matter
-- you CAN'T use -- or ++, only +1 or -1 (why?)
+- you CAN'T use -- or ++, only +1 or -1 (why? - probably bc I was trying it after?, has to be before)
 
 
 */
