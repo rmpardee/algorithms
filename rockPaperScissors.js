@@ -80,31 +80,31 @@ a. if you DO pass in the turn count:
 
 // v1b: passing in just throws, using concat
 
-var rockPaperScissors = function (rounds) {
-  var options = ['rock', 'paper', 'scissors'];
-  var allThrowsOptions = [];
+// var rockPaperScissors = function (rounds) {
+//   var options = ['rock', 'paper', 'scissors'];
+//   var allThrowsOptions = [];
 
-  var createThrows = function(throws) {
-    // base case: my throws array is as long as the rounds passed in
-    if (throws.length === rounds) {
-      allThrowsOptions.push(throws);
-      return;
-    }
-    // recursive case: my throws array is not long enough yet
-    // loop through the throw options
-    for (var i = 0; i < options.length; i++) {
-      // NOTE: since throws.concat(options[i]) returns the array itself, we could just pass it in directly instead (which we couldn't do with push)
-      createThrows(throws.concat(options[i]));
+//   var createThrows = function(throws) {
+//     // base case: my throws array is as long as the rounds passed in
+//     if (throws.length === rounds) {
+//       allThrowsOptions.push(throws);
+//       return;
+//     }
+//     // recursive case: my throws array is not long enough yet
+//     // loop through the throw options
+//     for (var i = 0; i < options.length; i++) {
+//       // NOTE: since throws.concat(options[i]) returns the array itself, we could just pass it in directly instead (which we couldn't do with push)
+//       createThrows(throws.concat(options[i]));
 
-      // (optionally we could have done:)
-      // var newThrows = throws.concat(options[i]);
-      // createThrows(newThrows);
-    }
+//       // (optionally we could have done:)
+//       // var newThrows = throws.concat(options[i]);
+//       // createThrows(newThrows);
+//     }
 
-  };
-  createThrows([]);
-  return allThrowsOptions;
-};
+//   };
+//   createThrows([]);
+//   return allThrowsOptions;
+// };
 
 
 // v2a: not passing in anything, throws is outside the scope of the subroutine, using slice and pop
@@ -182,4 +182,29 @@ var rockPaperScissors = function (rounds) {
 //   return allThrowsOptions;
 // };
 
-console.log("rockPaperScissors(3): ", rockPaperScissors(3));
+// Nov 14, 2016 extra practice (RPS from memory)
+
+const rockPaperScissors = (rounds) => {
+  const options = ['rock', 'paper', 'scissors'];
+  const permutations = [];
+
+  const makePermutations = (currentPermutation = []) => {
+    // base case 1: if current is the length of rounds input, add to permutations array
+    if (currentPermutation.length === rounds) {
+      permutations.push(currentPermutation);
+      return;
+    // recursive case: not long enough yet, recurse in a loop that goes through all options
+    } else {
+      options.forEach(option => {
+        const newCurrent = currentPermutation.slice();
+        newCurrent.push(option);
+        makePermutations(newCurrent);
+      });
+    }
+  };
+
+  makePermutations();
+  return permutations;
+};
+
+console.log("rockPaperScissors(1): ", rockPaperScissors(1));
