@@ -20,19 +20,17 @@ My recursive questions:
 1) when do you need to return? (to tell it to stop?)
 2) when do you pass parameters into the subroutine or not?
 
-TO EXPLORE in below versions:
-1) What's with the .pop showing up even though it's after the push?
 
 LEARNED:
 1) must be a subroutine, with the results array being built up
 
-2) you return after the base case (to tell it that iteration of the call to the subroutine is done), and not anywhere in the recursive case
+2) you return after the base case (to tell it that iteration of the call to the subroutine is done), and not anywhere in the recursive case - because with this specific case the subroutine builds what we return for the fn as a whole (subroutine causes a side effect not creating anything itself)
 
 3) You can define the throws array either outside the scope of the subroutine or as a parameter to the subroutine
 
 a. whether or not you pass in the throws array:
 - METHOD 1: you can use slice before pushing to the results array, push to add the throw to the throws array, and pop after the recursive call
-- you can't pop after the base case, only after the recursive call (why?)
+- you can't pop after the base case, only after the recursive call, because you need it to pop previous iterations while its looping (if it's just in the base case it will never change the second item)
 
 b. if you DO pass in the throws array as a parameter:
 - if you use method 1, you have to push before the recursive call, not in it, since .push returns 1 not the array
@@ -41,7 +39,7 @@ b. if you DO pass in the throws array as a parameter:
 4) There is no need to pass in the turn count, it's irrelevant
 a. if you DO pass in the turn count:
 - you can count up or down, doesn't matter
-- you CAN'T use -- or ++, only +1 or -1 (why? - probably bc I was trying it after?, has to be before)
+- you CAN'T use -- or ++, only +1 or -1, because that redefines the argument which will mess it up in the next iteration of the loop
 
 
 */
@@ -55,7 +53,7 @@ a. if you DO pass in the turn count:
 //     // base case: my throws array is as long as the rounds passed in
 //     if (throws.length === rounds) {
 //       allThrowsOptions.push(throws);
-//       // THIS DOES NOT WORK
+//       // THIS DOES NOT WORK because it would be altering the copied version of throws, not the one the previous iteration was looping through
 //       // throws.pop();
 //       return;
 //     }
@@ -125,6 +123,7 @@ a. if you DO pass in the turn count:
 //     for (var i = 0; i < options.length; i++) {
 //       throws.push(options[i]);
 //       createThrows();
+//       // .pop has to be here (not in the base case) because you need it to run after it has created throws to continue the loop. The second item will never change if you .pop after the base case
 //       throws.pop();
 //     }
 //   };
@@ -159,52 +158,55 @@ a. if you DO pass in the turn count:
 
 // v3: passes in # of turns left
 
-// var rockPaperScissors = function (rounds) {
-//   var options = ['rock', 'paper', 'scissors'];
-//   var allThrowsOptions = [];
-//   var createThrows = function(turnsLeft, throws) {
-//     // base case: my throws array is as long as the rounds passed in
-//     if (turnsLeft === 3) {
-//       allThrowsOptions.push(throws.slice());
-//       return;
-//     }
-//     // recursive case: my throws array is not long enough yet
-//     // loop through the throw options
-//     for (var i = 0; i < options.length; i++) {
-//       throws.push(options[i]);
-//       // NOTE: you can only use +1, can't use ++
-//       createThrows(turnsLeft+1, throws);
-//       throws.pop();
-//     }
-
-//   };
-//   createThrows(0, []);
-//   return allThrowsOptions;
-// };
-
-// Nov 14, 2016 extra practice (RPS from memory)
-
-const rockPaperScissors = (rounds) => {
-  const options = ['rock', 'paper', 'scissors'];
-  const permutations = [];
-
-  const makePermutations = (currentPermutation = []) => {
-    // base case 1: if current is the length of rounds input, add to permutations array
-    if (currentPermutation.length === rounds) {
-      permutations.push(currentPermutation);
+var rockPaperScissors = function (rounds) {
+  var options = ['rock', 'paper', 'scissors'];
+  var allThrowsOptions = [];
+  var createThrows = function(turnsLeft, throws) {
+    // base case: my throws array is as long as the rounds passed in
+    if (turnsLeft === rounds) {
+      allThrowsOptions.push(throws.slice());
       return;
-    // recursive case: not long enough yet, recurse in a loop that goes through all options
-    } else {
-      options.forEach(option => {
-        const newCurrent = currentPermutation.slice();
-        newCurrent.push(option);
-        makePermutations(newCurrent);
-      });
     }
-  };
+    // recursive case: my throws array is not long enough yet
+    // loop through the throw options
+    for (var i = 0; i < options.length; i++) {
+      throws.push(options[i]);
+      // NOTE: you can only use +1, can't use ++ or the line below
+      // as those redefine turnsLeft itself and it will therefore be wrong for future parts of the loop
+      // turnsLeft = turnsLeft + 1;
+      createThrows(turnsLeft + 1, throws);
+      // I could use ++ before turnsLeft above, if I include the line below as well
+      // turnsLeft--;
+      throws.pop();
+    }
 
-  makePermutations();
-  return permutations;
+  };
+  createThrows(0, []);
+  return allThrowsOptions;
 };
 
-console.log("rockPaperScissors(1): ", rockPaperScissors(1));
+//  Nov 14, 2016 extra practice (RPS from memory)
+
+// const rockPaperScissors = (rounds) => {
+//   const options = ['rock', 'paper', 'scissors'];
+//   const permutations = [];
+
+//   const makePermutations = (currentPermutation = []) => {
+//     // base case 1: if current is the length of rounds input, add to permutations array
+//     if (currentPermutation.length === rounds) {
+//       permutations.push(currentPermutation);
+//     // recursive case: not long enough yet, recurse in a loop that goes through all options
+//     } else {
+//       options.forEach(option => {
+//         const newCurrent = currentPermutation.slice();
+//         newCurrent.push(option);
+//         makePermutations(newCurrent);
+//       });
+//     }
+//   };
+
+//   makePermutations();
+//   return permutations;
+// };
+
+console.log("rockPaperScissors(3): ", rockPaperScissors(3));
